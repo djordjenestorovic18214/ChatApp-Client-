@@ -3,6 +3,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.net.Socket;
+import java.net.UnknownHostException;
 
 public class Client implements Runnable {
 
@@ -14,8 +15,7 @@ public class Client implements Runnable {
 
 	public static void main(String[] args) {
 		try {
-
-			int port = 2003;
+			int port = 23789;
 
 			if (args.length > 0)
 				port = Integer.parseInt(args[0]);
@@ -28,35 +28,35 @@ public class Client implements Runnable {
 
 			new Thread(new Client()).start();
 
-			while (!kraj)
-				outStreamToServer.print(console.readLine());
-
+			while (!kraj) {
+				outStreamToServer.println(console.readLine());
+			}
 			communicationSocket.close();
+			
+		}catch (UnknownHostException e) {
+			System.err.println("Don't know about host");
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			System.err.println(e);
 		}
 	}
-
+	
+	@Override
 	public void run() {
+		String textlineFromServer;
+
 		try {
-
-			String textlineFromServer;
-
-			while (inStreamFromServer.readLine() != null) {
-				textlineFromServer = inStreamFromServer.readLine();
+			while ((textlineFromServer = inStreamFromServer.readLine()) != null) {
 
 				System.out.println(textlineFromServer);
-				if (textlineFromServer.indexOf("***Goodbye ") == 0) {
+				
+				if (textlineFromServer.startsWith("***Goodbye ")) {
 					kraj = true;
 					return;
 				}
-
 			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
-
 }
