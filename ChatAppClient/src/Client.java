@@ -49,14 +49,13 @@ public class Client implements Runnable {
 
 				System.out.println(textlineFromServer);
 				
-				if (textlineFromServer.startsWith("***Goodbye ")) {
+				if (textlineFromServer.startsWith("•••Goodbye ")) {
 					kraj = true;
 					return;
 				}
 			}
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			System.err.println(e);
 		}
 	}
 }
